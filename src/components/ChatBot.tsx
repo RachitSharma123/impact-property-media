@@ -11,7 +11,7 @@ const QUICK_REPLIES = [
   'What services do you offer?',
   'How much does it cost?',
   'How fast is turnaround?',
-  'Book a shoot',
+  'Leave your number',
 ]
 
 const BOT_RESPONSES: Record<string, string> = {
@@ -67,10 +67,59 @@ export default function ChatBot() {
   const [input, setInput] = useState('')
   const [typing, setTyping] = useState(false)
   const bottomRef = useRef<HTMLDivElement>(null)
+  const [leadData, setLeadData] = useState<{ name?: string; phone?: string; email?: string }>({})
+  const leadDataRef = useRef<{ name?: string; phone?: string; email?: string }>({})
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [messages, typing])
+
+  async function fireWebhook(data: { name?: string; phone?: string; email?: string; message?: string }) {
+    try {
+      await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: data.name || 'Unknown',
+          phone: data.phone || '',
+          email: data.email || '',
+          message: data.message || 'Lead captured via chatbot',
+          source: 'chatbot',
+        }),
+      })
+    } catch {}
+  }
+
+  function detectAndSaveLead(text: string) {
+    const updated: { name?: string; phone?: string; email?: string } = { ...leadDataRef.current }
+
+    // Detect phone: Australian mobile (04xx) or landline (+61/0 followed by 8 digits)
+    const phoneMatch = text.match(/(\+?61|0)4\d{8}/) || text.match(/(\+?61|0)[2-9]\d{8}/)
+    if (phoneMatch) {
+      updated.phone = phoneMatch[0]
+    }
+
+    // Detect email
+    const emailMatch = text.match(/[^\s@]+@[^\s@]+\.[^\s@]+/)
+    if (emailMatch) {
+      updated.email = emailMatch[0]
+    }
+
+    // Detect name: "my name is X", "I'm X", "I am X"
+    const nameMatch =
+      text.match(/(?:my name is|i(?:'| a)m)\s+([A-Z][a-z]+(?:\s+[A-Z][a-z]+)?)/i)
+    if (nameMatch) {
+      updated.name = nameMatch[1]
+    }
+
+    leadDataRef.current = updated
+    setLeadData(updated)
+
+    // Fire webhook when phone AND (name or email) are known
+    if (updated.phone && (updated.name || updated.email)) {
+      fireWebhook({ ...updated, message: `Lead captured via chatbot. Last message: ${text}` })
+    }
+  }
 
   function sendMessage(text: string) {
     if (!text.trim()) return
@@ -79,8 +128,26 @@ export default function ChatBot() {
     setInput('')
     setTyping(true)
 
+    // Run lead detection on user messages
+    detectAndSaveLead(text)
+
+    // Check if message is primarily a phone number
+    const isPhoneOnly =
+      /^[\s\d\+\-\(\)]{7,15}$/.test(text.trim()) &&
+      (/(\+?61|0)4\d{8}/.test(text) || /(\+?61|0)[2-9]\d{8}/.test(text))
+
     setTimeout(() => {
-      const botReply = getBotResponse(text)
+      let botReply: string
+      if (isPhoneOnly) {
+        botReply = "Got it! \uD83D\uDCDE We'll be in touch shortly. Can I also grab your name?"
+      } else if (
+        /(\+?61|0)4\d{8}/.test(text) ||
+        /(\+?61|0)[2-9]\d{8}/.test(text)
+      ) {
+        botReply = "Thanks! We'll give you a call shortly to discuss your property needs. \uD83D\uDCDE"
+      } else {
+        botReply = getBotResponse(text)
+      }
       setMessages((prev) => [...prev, { role: 'bot', text: botReply }])
       setTyping(false)
     }, 800)

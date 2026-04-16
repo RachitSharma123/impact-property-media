@@ -24,9 +24,15 @@ export default function ContactPage() {
     }))
   }
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    console.log('Contact form submission:', form)
+    try {
+      await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...form, source: 'contact_form' }),
+      })
+    } catch {}
     setSubmitted(true)
   }
 
