@@ -50,7 +50,7 @@ export default function AboutSection() {
           line-height: 1;
         }
         .about-stat-label {
-          font-size: 0.8rem;
+          font-size: 1.8rem;
           color: #666;
           margin-top: 0.35rem;
         }
@@ -82,7 +82,7 @@ export default function AboutSection() {
           padding: 0.75rem 1.1rem;
           border-radius: 0.75rem;
           max-width: 180px;
-          font-size: 0.8rem;
+          font-size: 1.8rem;
           font-weight: 700;
           color: #1f1e1f;
           line-height: 1.35;

@@ -63,7 +63,7 @@ export default function VideoHero() {
         }
 
         .vh-label {
-          font-size: 0.8rem;
+          font-size: 1.8rem;
           font-weight: 600;
           letter-spacing: 0.15em;
           text-transform: uppercase;
