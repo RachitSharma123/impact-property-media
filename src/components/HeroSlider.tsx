@@ -199,7 +199,8 @@ export default function HeroSlider() {
             <SwiperSlide key={index}>
               <Image
                 src={slide.image}
-                alt={slide.heading}
+                alt=""
+                role="presentation"
                 fill
                 style={{ objectFit: 'cover' }}
                 priority={index === 0}
