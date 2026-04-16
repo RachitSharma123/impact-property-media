@@ -29,7 +29,7 @@ export default function Testimonials() {
         }
         .testi-label {
           text-align: center;
-          font-size: 0.7rem;
+          font-size: 1.2rem;
           font-weight: 700;
           letter-spacing: 0.2em;
           text-transform: uppercase;

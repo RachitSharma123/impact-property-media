@@ -17,7 +17,7 @@ export default function AboutSection() {
           .about-inner { grid-template-columns: 1fr; gap: 3rem; padding: 4rem 1.5rem; }
         }
         .about-label {
-          font-size: 0.7rem;
+          font-size: 1.2rem;
           font-weight: 700;
           letter-spacing: 0.2em;
           text-transform: uppercase;
