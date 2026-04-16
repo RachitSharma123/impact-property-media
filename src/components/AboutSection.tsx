@@ -1,120 +1,133 @@
-import Image from 'next/image';
-
-const stats = [
-  { value: '200+', label: 'Agents Trust Us' },
-  { value: '5000+', label: 'Properties Shot' },
-];
+import Image from 'next/image'
 
 export default function AboutSection() {
   return (
-    <section
-      id="about"
-      style={{ backgroundColor: '#f8f8f8' }}
-      className="py-20 px-4 sm:px-6 lg:px-8"
-    >
-      <div className="max-w-7xl mx-auto">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
-          {/* Left: Text content */}
-          <div>
-            <p
-              className="text-xs font-bold uppercase tracking-[0.2em] mb-4"
-              style={{ color: '#bac6ff', fontFamily: 'Poppins, sans-serif' }}
-            >
-              About Us
-            </p>
-            <h2
-              className="text-3xl sm:text-4xl lg:text-5xl font-bold leading-tight mb-6"
-              style={{ color: '#1f1e1f', fontFamily: 'Poppins, sans-serif' }}
-            >
-              We Tell Your Property&apos;s Story
-            </h2>
-            <p
-              className="text-base leading-relaxed mb-4"
-              style={{ color: '#444444', fontFamily: 'Poppins, sans-serif' }}
-            >
-              Impact Property Media is Melbourne&apos;s premier real estate media company. We combine
-              technical precision with creative vision to produce photography, video and digital
-              content that makes properties stand out in any market.
-            </p>
-            <p
-              className="text-base leading-relaxed mb-10"
-              style={{ color: '#444444', fontFamily: 'Poppins, sans-serif' }}
-            >
-              Founded by passionate photographers with deep roots in the Melbourne property market,
-              we understand what buyers respond to — and we make sure your listing delivers it.
-            </p>
+    <section id="about" style={{ backgroundColor: '#f8f8f8', fontFamily: 'Poppins, sans-serif' }}>
+      <style>{`
+        .about-inner {
+          max-width: 1200px;
+          margin: 0 auto;
+          padding: 6rem 2rem;
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 5rem;
+          align-items: center;
+        }
+        @media (max-width: 900px) {
+          .about-inner { grid-template-columns: 1fr; gap: 3rem; padding: 4rem 1.5rem; }
+        }
+        .about-label {
+          font-size: 0.7rem;
+          font-weight: 700;
+          letter-spacing: 0.2em;
+          text-transform: uppercase;
+          color: #bac6ff;
+          margin-bottom: 1rem;
+        }
+        .about-heading {
+          font-size: clamp(1.8rem, 3.5vw, 2.75rem);
+          font-weight: 700;
+          color: #1f1e1f;
+          line-height: 1.2;
+          margin-bottom: 1.5rem;
+          letter-spacing: -0.03em;
+        }
+        .about-body {
+          font-size: 1rem;
+          color: #444;
+          line-height: 1.75;
+          margin-bottom: 1rem;
+        }
+        .about-stats {
+          display: flex;
+          gap: 2.5rem;
+          margin: 2rem 0;
+        }
+        .about-stat-value {
+          font-size: 2rem;
+          font-weight: 700;
+          color: #1f1e1f;
+          line-height: 1;
+        }
+        .about-stat-label {
+          font-size: 0.8rem;
+          color: #666;
+          margin-top: 0.35rem;
+        }
+        .about-cta {
+          display: inline-block;
+          padding: 0.85rem 2rem;
+          border-radius: 100vw;
+          background: #1f1e1f;
+          color: #f8f8f8;
+          font-size: 0.875rem;
+          font-weight: 600;
+          text-decoration: none;
+          letter-spacing: 0.05em;
+          text-transform: uppercase;
+          transition: opacity 0.2s;
+        }
+        .about-cta:hover { opacity: 0.85; }
+        .about-img-wrap {
+          position: relative;
+          border-radius: 1rem;
+          overflow: hidden;
+          box-shadow: 0 20px 60px rgba(0,0,0,0.12);
+        }
+        .about-badge {
+          position: absolute;
+          bottom: 1.5rem;
+          left: 1.5rem;
+          background: #bac6ff;
+          padding: 0.75rem 1.1rem;
+          border-radius: 0.75rem;
+          max-width: 180px;
+          font-size: 0.8rem;
+          font-weight: 700;
+          color: #1f1e1f;
+          line-height: 1.35;
+        }
+      `}</style>
 
-            {/* Stats */}
-            <div className="flex gap-10 mb-10">
-              {stats.map((stat) => (
-                <div key={stat.label}>
-                  <p
-                    className="text-3xl font-bold"
-                    style={{ color: '#1f1e1f', fontFamily: 'Poppins, sans-serif' }}
-                  >
-                    {stat.value}
-                  </p>
-                  <p
-                    className="text-sm mt-1"
-                    style={{ color: '#666666', fontFamily: 'Poppins, sans-serif' }}
-                  >
-                    {stat.label}
-                  </p>
-                </div>
-              ))}
+      <div className="about-inner">
+        {/* Left */}
+        <div>
+          <p className="about-label">About Us</p>
+          <h2 className="about-heading">We Tell Your Property&apos;s Story</h2>
+          <p className="about-body">
+            Impact Property Media is Melbourne&apos;s premier real estate media company. We combine
+            technical precision with creative vision to produce photography, video and digital
+            content that makes properties stand out in any market.
+          </p>
+          <p className="about-body">
+            Founded by passionate photographers with deep roots in the Melbourne property market,
+            we understand what buyers respond to — and we make sure your listing delivers it.
+          </p>
+          <div className="about-stats">
+            <div>
+              <div className="about-stat-value">200+</div>
+              <div className="about-stat-label">Agents Trust Us</div>
             </div>
-
-            {/* CTA */}
-            <a
-              href="/about"
-              className="inline-block px-7 py-3 rounded-full font-semibold text-sm uppercase tracking-widest transition-all duration-300 hover:opacity-90 hover:scale-[1.02]"
-              style={{
-                backgroundColor: '#1f1e1f',
-                color: '#f8f8f8',
-                fontFamily: 'Poppins, sans-serif',
-              }}
-            >
-              Meet the Team
-            </a>
+            <div>
+              <div className="about-stat-value">5000+</div>
+              <div className="about-stat-label">Properties Shot</div>
+            </div>
           </div>
+          <a href="/about" className="about-cta">Meet the Team</a>
+        </div>
 
-          {/* Right: Image with floating badge */}
-          <div className="relative">
-            <div className="relative overflow-hidden rounded-2xl shadow-2xl">
-              <Image
-                src="https://images.unsplash.com/photo-1600210492493-0946911123ea?w=800&q=80"
-                alt="Impact Property Media team at work"
-                width={800}
-                height={900}
-                sizes="(max-width: 1024px) 100vw, 50vw"
-                className="w-full h-auto object-cover"
-                style={{ display: 'block' }}
-              />
-              {/* Subtle dark overlay */}
-              <div
-                className="absolute inset-0 rounded-2xl"
-                style={{ background: 'linear-gradient(to bottom, transparent 60%, rgba(31,30,31,0.35) 100%)' }}
-              />
-            </div>
-
-            {/* Floating badge */}
-            <div
-              className="absolute -bottom-5 -left-5 sm:bottom-6 sm:left-6 px-5 py-4 rounded-xl shadow-xl"
-              style={{
-                backgroundColor: '#bac6ff',
-                maxWidth: '200px',
-              }}
-            >
-              <p
-                className="text-xs font-bold uppercase tracking-wide leading-snug"
-                style={{ color: '#1f1e1f', fontFamily: 'Poppins, sans-serif' }}
-              >
-                Melbourne&apos;s #1 Property Media Team
-              </p>
-            </div>
-          </div>
+        {/* Right */}
+        <div className="about-img-wrap">
+          <Image
+            src="https://images.unsplash.com/photo-1600210492493-0946911123ea?w=800&q=80"
+            alt="Impact Property Media team at work"
+            width={800}
+            height={900}
+            style={{ width: '100%', height: 'auto', display: 'block', objectFit: 'cover' }}
+          />
+          <div className="about-badge">Melbourne&apos;s #1 Property Media Team</div>
         </div>
       </div>
     </section>
-  );
+  )
 }
