@@ -1,4 +1,6 @@
-const agencies = [
+import { supabaseAdmin } from '@/lib/supabase'
+
+const DEFAULT_AGENCIES = [
   "Ray White",
   "Barry Plant",
   "Harcourts",
@@ -9,10 +11,26 @@ const agencies = [
   "Biggin & Scott",
   "RT Edgar",
   "Kay & Burton",
-];
+]
 
-export default function LogoBar() {
-  const duplicated = [...agencies, ...agencies];
+export default async function LogoBar() {
+  let agencies = DEFAULT_AGENCIES
+
+  try {
+    const { data } = await supabaseAdmin
+      .from('site_content')
+      .select('value')
+      .eq('key', 'logobar_agencies')
+      .single()
+
+    if (data?.value) {
+      agencies = data.value.split(',').map((s: string) => s.trim()).filter(Boolean)
+    }
+  } catch {
+    // fall back to defaults
+  }
+
+  const duplicated = [...agencies, ...agencies]
 
   return (
     <div
@@ -78,5 +96,5 @@ export default function LogoBar() {
         </div>
       </div>
     </div>
-  );
+  )
 }

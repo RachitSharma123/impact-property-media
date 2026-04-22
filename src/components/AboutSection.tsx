@@ -1,6 +1,36 @@
 import Image from 'next/image'
+import { supabaseAdmin } from '@/lib/supabase'
 
-export default function AboutSection() {
+const DEFAULTS: Record<string, string> = {
+  about_heading: "We Tell Your Property's Story",
+  about_body1: "Impact Property Media is Melbourne's premier real estate media company. We combine technical precision with creative vision to produce photography, video and digital content that makes properties stand out in any market.",
+  about_body2: "Founded by passionate photographers with deep roots in the Melbourne property market, we understand what buyers respond to — and we make sure your listing delivers it.",
+  about_stat1_value: '200+',
+  about_stat1_label: 'Agents Trust Us',
+  about_stat2_value: '5000+',
+  about_stat2_label: 'Properties Shot',
+  about_image_url: 'https://images.unsplash.com/photo-1600210492493-0946911123ea?w=800&q=80',
+  about_badge: "Melbourne's #1 Property Media Team",
+}
+
+export default async function AboutSection() {
+  let content: Record<string, string> = { ...DEFAULTS }
+
+  try {
+    const { data } = await supabaseAdmin
+      .from('site_content')
+      .select('key, value')
+      .in('key', Object.keys(DEFAULTS))
+
+    if (data) {
+      data.forEach(row => {
+        content[row.key] = row.value
+      })
+    }
+  } catch {
+    // fall back to defaults
+  }
+
   return (
     <section id="about" style={{ backgroundColor: '#f8f8f8', fontFamily: 'Poppins, sans-serif' }}>
       <style>{`
@@ -93,24 +123,17 @@ export default function AboutSection() {
         {/* Left */}
         <div>
           <p className="about-label">About Us</p>
-          <h2 className="about-heading">We Tell Your Property&apos;s Story</h2>
-          <p className="about-body">
-            Impact Property Media is Melbourne&apos;s premier real estate media company. We combine
-            technical precision with creative vision to produce photography, video and digital
-            content that makes properties stand out in any market.
-          </p>
-          <p className="about-body">
-            Founded by passionate photographers with deep roots in the Melbourne property market,
-            we understand what buyers respond to — and we make sure your listing delivers it.
-          </p>
+          <h2 className="about-heading">{content.about_heading}</h2>
+          <p className="about-body">{content.about_body1}</p>
+          <p className="about-body">{content.about_body2}</p>
           <div className="about-stats">
             <div>
-              <div className="about-stat-value">200+</div>
-              <div className="about-stat-label">Agents Trust Us</div>
+              <div className="about-stat-value">{content.about_stat1_value}</div>
+              <div className="about-stat-label">{content.about_stat1_label}</div>
             </div>
             <div>
-              <div className="about-stat-value">5000+</div>
-              <div className="about-stat-label">Properties Shot</div>
+              <div className="about-stat-value">{content.about_stat2_value}</div>
+              <div className="about-stat-label">{content.about_stat2_label}</div>
             </div>
           </div>
           <a href="/about" className="about-cta">Meet the Team</a>
@@ -119,13 +142,13 @@ export default function AboutSection() {
         {/* Right */}
         <div className="about-img-wrap">
           <Image
-            src="https://images.unsplash.com/photo-1600210492493-0946911123ea?w=800&q=80"
+            src={content.about_image_url}
             alt="Impact Property Media team at work"
             width={800}
             height={900}
             style={{ width: '100%', height: 'auto', display: 'block', objectFit: 'cover' }}
           />
-          <div className="about-badge">Melbourne&apos;s #1 Property Media Team</div>
+          <div className="about-badge">{content.about_badge}</div>
         </div>
       </div>
     </section>

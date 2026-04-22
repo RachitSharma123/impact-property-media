@@ -1,38 +1,74 @@
 import Image from 'next/image';
+import { supabaseAdmin } from '@/lib/supabase'
 
-const services = [
+const FALLBACK_SERVICES = [
   {
+    id: '1',
     name: 'Photography',
     description: 'HDR stills that showcase every room in its best light.',
-    image: 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800&q=80',
+    image_url: 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800&q=80',
+    link_href: '/services/photography',
+    display_order: 1,
   },
   {
+    id: '2',
     name: 'Videography',
-    description:
-      'Cinematic walkthroughs that put buyers in the property before they visit.',
-    image: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=80',
+    description: 'Cinematic walkthroughs that put buyers in the property before they visit.',
+    image_url: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=80',
+    link_href: '/services/videography',
+    display_order: 2,
   },
   {
+    id: '3',
     name: 'Aerial & Drone',
-    description:
-      "Bird's-eye perspective that showcases land, location and lifestyle.",
-    image: 'https://images.unsplash.com/photo-1473968512647-3e447244af8f?w=800&q=80',
+    description: "Bird's-eye perspective that showcases land, location and lifestyle.",
+    image_url: 'https://images.unsplash.com/photo-1473968512647-3e447244af8f?w=800&q=80',
+    link_href: '/services/aerial-drone',
+    display_order: 3,
   },
   {
+    id: '4',
     name: 'Virtual Tours',
-    description:
-      'Interactive 3D tours so buyers can walk through anytime, anywhere.',
-    image: 'https://images.unsplash.com/photo-1600573472592-401b489a3cdc?w=800&q=80',
+    description: 'Interactive 3D tours so buyers can walk through anytime, anywhere.',
+    image_url: 'https://images.unsplash.com/photo-1600573472592-401b489a3cdc?w=800&q=80',
+    link_href: '/services/virtual-tours',
+    display_order: 4,
   },
   {
+    id: '5',
     name: 'Floor Plans',
-    description:
-      'Accurate, detailed floor plans that help buyers understand the space.',
-    image: 'https://images.unsplash.com/photo-1524758631624-e2822e304c36?w=800&q=80',
+    description: 'Accurate, detailed floor plans that help buyers understand the space.',
+    image_url: 'https://images.unsplash.com/photo-1524758631624-e2822e304c36?w=800&q=80',
+    link_href: '/services/floor-plans',
+    display_order: 5,
   },
-];
+]
 
-export default function ServicesGrid() {
+interface Service {
+  id: string
+  name: string
+  description: string
+  image_url: string
+  link_href: string
+  display_order: number
+}
+
+export default async function ServicesGrid() {
+  let services: Service[] = FALLBACK_SERVICES
+
+  try {
+    const { data } = await supabaseAdmin
+      .from('services')
+      .select('*')
+      .order('display_order')
+
+    if (data && data.length > 0) {
+      services = data
+    }
+  } catch {
+    // fall back to hardcoded
+  }
+
   return (
     <>
       <style>{`
@@ -139,7 +175,6 @@ export default function ServicesGrid() {
           letter-spacing: 0.01em;
           transition: color 0.2s;
           align-self: flex-start;
-          /* Darken slightly on hover for legibility on light bg */
           filter: brightness(0.82);
         }
 
@@ -174,11 +209,11 @@ export default function ServicesGrid() {
         </div>
 
         <div className="services-grid">
-          {services.map((service, index) => (
-            <div key={index} className="service-card">
+          {services.map((service) => (
+            <div key={service.id} className="service-card">
               <div className="service-image-wrap">
                 <Image
-                  src={service.image}
+                  src={service.image_url}
                   alt={service.name}
                   fill
                   style={{ objectFit: 'cover' }}
@@ -189,7 +224,7 @@ export default function ServicesGrid() {
               <div className="service-body">
                 <h3 className="service-name">{service.name}</h3>
                 <p className="service-description">{service.description}</p>
-                <a href={`#${service.name.toLowerCase().replace(/\s+/g, '-')}`} className="service-link">
+                <a href={service.link_href || `#${service.name.toLowerCase().replace(/\s+/g, '-')}`} className="service-link">
                   Learn More →
                 </a>
               </div>

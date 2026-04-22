@@ -1,4 +1,7 @@
+export const dynamic = 'force-dynamic'
+
 import type { Metadata } from "next";
+import { supabaseAdmin } from "@/lib/supabase";
 
 export const metadata: Metadata = {
   title: "Pricing | Impact Property Media",
@@ -6,32 +9,10 @@ export const metadata: Metadata = {
     "Simple, transparent pricing for real estate photography, video, aerial and virtual tours in Melbourne. No hidden fees.",
 };
 
-const essentialFeatures = [
-  { text: "20 HDR Photos", included: true },
-  { text: "Same-day editing", included: true },
-  { text: "Web & print ready files", included: true },
-  { text: "Online delivery portal", included: true },
-  { text: "Cinematic video", included: false },
-  { text: "Aerial / drone", included: false },
-];
-
-const professionalFeatures = [
-  { text: "30 HDR Photos", included: true },
-  { text: "Cinematic video walkthrough", included: true },
-  { text: "Same-day editing", included: true },
-  { text: "Web & print ready files", included: true },
-  { text: "Online delivery portal", included: true },
-  { text: "Aerial / drone", included: false },
-];
-
-const luxuryFeatures = [
-  { text: "40 HDR Photos", included: true },
-  { text: "Cinematic video walkthrough", included: true },
-  { text: "Aerial & drone footage", included: true },
-  { text: "Interactive virtual tour", included: true },
-  { text: "Floor plan", included: true },
-  { text: "Same-day editing", included: true },
-  { text: "Priority booking", included: true },
+const FALLBACK_PACKAGES = [
+  { tier: 'Essential', monthly_price: 299, annual_price: 249, features: ['20 HDR Photos', 'Same-day editing', 'Web & print ready files', 'Online delivery portal'], highlighted: false },
+  { tier: 'Professional', monthly_price: 549, annual_price: 469, features: ['30 HDR Photos', 'Cinematic video walkthrough', 'Same-day editing', 'Web & print ready files', 'Online delivery portal'], highlighted: true },
+  { tier: 'Luxury', monthly_price: 849, annual_price: 719, features: ['40 HDR Photos', 'Cinematic video walkthrough', 'Aerial & drone footage', 'Interactive virtual tour', 'Floor plan', 'Same-day editing', 'Priority booking'], highlighted: false },
 ];
 
 const addons = [
@@ -82,7 +63,10 @@ const faqs = [
   },
 ];
 
-export default function PricingPage() {
+export default async function PricingPage() {
+  const { data } = await supabaseAdmin.from('packages').select('*').order('monthly_price')
+  const packages = data?.length ? data : FALLBACK_PACKAGES
+
   return (
     <>
       <style>{`
@@ -439,71 +423,29 @@ export default function PricingPage() {
         {/* Package Cards */}
         <section className="pr-packages">
           <div className="pr-cards-row">
-            {/* Essential */}
-            <div className="pr-card" style={{ border: "1px solid #ffffff1a" }}>
-              <span className="pr-badge pr-badge-default">Starter</span>
-              <h2 className="pr-card-name">Essential</h2>
-              <p className="pr-card-price">$299</p>
-              <p className="pr-card-meta">Delivery within 24 hours</p>
-              <p className="pr-card-ideal">Ideal for apartments &amp; townhouses</p>
-              <ul className="pr-features">
-                {essentialFeatures.map((f) => (
-                  <li key={f.text} className="pr-feature-item">
-                    <span className={f.included ? "pr-check" : "pr-cross"}>
-                      {f.included ? "✓" : "✗"}
-                    </span>
-                    <span className={f.included ? "pr-feat-in" : "pr-feat-out"}>
-                      {f.text}
-                    </span>
-                  </li>
-                ))}
-              </ul>
-              <a href="/contact" className="btn-secondary">Get Started</a>
-            </div>
-
-            {/* Professional (featured) */}
-            <div className="pr-card pr-card-featured">
-              <span className="pr-badge pr-badge-featured">Best Value</span>
-              <h2 className="pr-card-name">Professional</h2>
-              <p className="pr-card-price pr-card-price-featured">$549</p>
-              <p className="pr-card-meta">Delivery within 48 hours</p>
-              <p className="pr-card-ideal">Ideal for family homes &amp; prestige properties</p>
-              <ul className="pr-features">
-                {professionalFeatures.map((f) => (
-                  <li key={f.text} className="pr-feature-item">
-                    <span className={f.included ? "pr-check" : "pr-cross"}>
-                      {f.included ? "✓" : "✗"}
-                    </span>
-                    <span className={f.included ? "pr-feat-in" : "pr-feat-out"}>
-                      {f.text}
-                    </span>
-                  </li>
-                ))}
-              </ul>
-              <a href="/contact" className="btn-primary">Get Started</a>
-            </div>
-
-            {/* Luxury */}
-            <div className="pr-card" style={{ border: "1px solid #ffffff1a" }}>
-              <span className="pr-badge pr-badge-default">Premium</span>
-              <h2 className="pr-card-name">Luxury</h2>
-              <p className="pr-card-price">$849</p>
-              <p className="pr-card-meta">Priority delivery within 24 hours</p>
-              <p className="pr-card-ideal">Ideal for luxury homes &amp; acreage</p>
-              <ul className="pr-features">
-                {luxuryFeatures.map((f) => (
-                  <li key={f.text} className="pr-feature-item">
-                    <span className={f.included ? "pr-check" : "pr-cross"}>
-                      {f.included ? "✓" : "✗"}
-                    </span>
-                    <span className={f.included ? "pr-feat-in" : "pr-feat-out"}>
-                      {f.text}
-                    </span>
-                  </li>
-                ))}
-              </ul>
-              <a href="/contact" className="btn-secondary">Get Started</a>
-            </div>
+            {packages.map((pkg: any) => (
+              <div
+                key={pkg.tier}
+                className={`pr-card${pkg.highlighted ? ' pr-card-featured' : ''}`}
+                style={{ border: pkg.highlighted ? '1px solid #bac6ff' : '1px solid #ffffff1a' }}
+              >
+                <span className={`pr-badge ${pkg.highlighted ? 'pr-badge-featured' : 'pr-badge-default'}`}>
+                  {pkg.highlighted ? 'Best Value' : 'Popular'}
+                </span>
+                <h2 className="pr-card-name" style={{ textTransform: 'capitalize' }}>{pkg.tier}</h2>
+                <p className={`pr-card-price${pkg.highlighted ? ' pr-card-price-featured' : ''}`}>${pkg.monthly_price}</p>
+                {pkg.annual_price && <p className="pr-card-meta">${pkg.annual_price}/mo billed annually</p>}
+                <ul className="pr-features">
+                  {(pkg.features ?? []).map((f: string) => (
+                    <li key={f} className="pr-feature-item">
+                      <span className="pr-check">✓</span>
+                      <span className="pr-feat-in">{f}</span>
+                    </li>
+                  ))}
+                </ul>
+                <a href="/contact" className={pkg.highlighted ? 'btn-primary' : 'btn-secondary'}>Get Started</a>
+              </div>
+            ))}
           </div>
         </section>
 

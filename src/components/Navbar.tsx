@@ -26,6 +26,7 @@ export default function Navbar() {
   const [servicesOpen, setServicesOpen] = useState(false);
   const [mobileServicesOpen, setMobileServicesOpen] = useState(false);
   const dropdownRef = useRef<HTMLLIElement>(null);
+  const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   /* ── Scroll listener ── */
   useEffect(() => {
@@ -101,13 +102,21 @@ export default function Navbar() {
             width="32"
             height="32"
             viewBox="0 0 32 32"
-            fill="none"
             xmlns="http://www.w3.org/2000/svg"
             aria-hidden="true"
           >
-            <rect width="32" height="32" rx="8" fill="#bac6ff" />
-            <path d="M8 22L13 11L18 19L21 15L24 22H8Z" fill="#1f1e1f" />
-            <circle cx="22" cy="11" r="2.5" fill="#1f1e1f" />
+            <rect width="32" height="32" rx="6" fill="#111213"/>
+            <circle cx="16" cy="15" r="10" fill="none" stroke="#ffffff" strokeWidth="1.5"/>
+            <circle cx="16" cy="15" r="6.5" fill="none" stroke="#ffffff" strokeWidth="0.8" strokeDasharray="2.5 2"/>
+            <circle cx="16" cy="13" r="2.8" fill="#ffffff"/>
+            <path d="M13.5,15.5 Q16,21 16,21 Q16,21 18.5,15.5" fill="#ffffff"/>
+            <circle cx="16" cy="13" r="1.1" fill="#111213"/>
+            <line x1="16" y1="5" x2="16" y2="3" stroke="#ffffff" strokeWidth="1.2" strokeLinecap="round"/>
+            <line x1="16" y1="25" x2="16" y2="27" stroke="#ffffff" strokeWidth="1.2" strokeLinecap="round"/>
+            <line x1="7.3" y1="10" x2="5.6" y2="9" stroke="#ffffff" strokeWidth="1.2" strokeLinecap="round"/>
+            <line x1="24.7" y1="20" x2="26.4" y2="21" stroke="#ffffff" strokeWidth="1.2" strokeLinecap="round"/>
+            <line x1="7.3" y1="20" x2="5.6" y2="21" stroke="#ffffff" strokeWidth="1.2" strokeLinecap="round"/>
+            <line x1="24.7" y1="10" x2="26.4" y2="9" stroke="#ffffff" strokeWidth="1.2" strokeLinecap="round"/>
           </svg>
           <span
             style={{
@@ -140,8 +149,13 @@ export default function Navbar() {
                 key={link.label}
                 ref={dropdownRef}
                 style={{ position: 'relative' }}
-                onMouseEnter={() => setServicesOpen(true)}
-                onMouseLeave={() => setServicesOpen(false)}
+                onMouseEnter={() => {
+                  if (closeTimer.current) clearTimeout(closeTimer.current);
+                  setServicesOpen(true);
+                }}
+                onMouseLeave={() => {
+                  closeTimer.current = setTimeout(() => setServicesOpen(false), 2000);
+                }}
               >
                 <button
                   onClick={() => setServicesOpen((v) => !v)}
@@ -334,21 +348,19 @@ export default function Navbar() {
       <div
         style={{
           position: 'fixed',
-          inset: 0,
           top: '4.5rem',
+          left: 0,
+          right: 0,
+          bottom: 0,
           background: 'rgba(31,30,31,0.98)',
           backdropFilter: 'blur(16px)',
           WebkitBackdropFilter: 'blur(16px)',
           padding: '1.5rem',
-          display: 'flex',
+          display: mobileOpen ? 'flex' : 'none',
           flexDirection: 'column',
           gap: '0.25rem',
           overflowY: 'auto',
-          opacity: mobileOpen ? 1 : 0,
-          pointerEvents: mobileOpen ? 'auto' : 'none',
-          transform: mobileOpen ? 'translateY(0)' : 'translateY(-12px)',
-          transition: 'opacity 0.3s ease, transform 0.3s ease',
-          zIndex: 99,
+          zIndex: 200,
         }}
         aria-hidden={!mobileOpen}
       >

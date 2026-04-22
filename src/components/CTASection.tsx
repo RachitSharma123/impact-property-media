@@ -1,4 +1,31 @@
-export default function CTASection() {
+import { supabaseAdmin } from '@/lib/supabase'
+
+const DEFAULTS: Record<string, string> = {
+  cta_stat: '1,000+',
+  cta_stat_label: 'agents trust Impact Property Media',
+  cta_subtext: 'Ready to make your listing stand out?',
+  cta_btn_text: 'Book Your Shoot Today →',
+  cta_btn_href: '#contact',
+}
+
+export default async function CTASection() {
+  let content: Record<string, string> = { ...DEFAULTS }
+
+  try {
+    const { data } = await supabaseAdmin
+      .from('site_content')
+      .select('key, value')
+      .in('key', Object.keys(DEFAULTS))
+
+    if (data) {
+      data.forEach(row => {
+        content[row.key] = row.value
+      })
+    }
+  } catch {
+    // fall back to defaults
+  }
+
   return (
     <section
       style={{
@@ -53,10 +80,10 @@ export default function CTASection() {
         }
       `}</style>
 
-      <p className="cta-stat">1,000+</p>
-      <p className="cta-stat-label">agents trust Impact Property Media</p>
-      <p className="cta-subtext">Ready to make your listing stand out?</p>
-      <a href="#contact" className="cta-btn">Book Your Shoot Today →</a>
+      <p className="cta-stat">{content.cta_stat}</p>
+      <p className="cta-stat-label">{content.cta_stat_label}</p>
+      <p className="cta-subtext">{content.cta_subtext}</p>
+      <a href={content.cta_btn_href} className="cta-btn">{content.cta_btn_text}</a>
     </section>
   );
 }

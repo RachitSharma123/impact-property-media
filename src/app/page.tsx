@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic'
+
 import VideoHero from '@/components/VideoHero'
 import LogoBar from '@/components/LogoBar'
 import ServicesGrid from '@/components/ServicesGrid'
@@ -9,8 +11,6 @@ import FAQSection from '@/components/FAQSection'
 import BlogSection from '@/components/BlogSection'
 import CTASection from '@/components/CTASection'
 import ContactSection from '@/components/ContactSection'
-import ChatBot from '@/components/ChatBot'
-
 export default function Home() {
   return (
     <>
@@ -25,7 +25,6 @@ export default function Home() {
       <BlogSection />
       <CTASection />
       <ContactSection />
-      <ChatBot />
     </>
   )
 }

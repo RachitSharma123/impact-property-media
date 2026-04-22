@@ -1,6 +1,7 @@
 import Image from 'next/image'
+import { supabaseAdmin } from '@/lib/supabase'
 
-const images = [
+const FALLBACK = [
   { src: 'https://images.unsplash.com/photo-1600047509807-ba8f99d2cdde?w=800&q=80', alt: 'Modern luxury home exterior' },
   { src: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80', alt: 'Bright open-plan living area' },
   { src: 'https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?w=800&q=80', alt: 'Contemporary kitchen design' },
@@ -12,7 +13,12 @@ const images = [
   { src: 'https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=800&q=80', alt: 'Penthouse with city views' },
 ]
 
-export default function PortfolioGrid() {
+export default async function PortfolioGrid() {
+  const { data } = await supabaseAdmin.from('portfolio_items').select('*').order('display_order').limit(9)
+  const images = data?.length
+    ? data.map((i: any) => ({ src: i.image_url, alt: i.title || 'Portfolio image' }))
+    : FALLBACK
+
   return (
     <section id="portfolio" style={{ background: '#1f1e1f', fontFamily: 'Poppins, sans-serif' }}>
       <style>{`
@@ -117,7 +123,7 @@ export default function PortfolioGrid() {
           ))}
         </div>
         <div className="port-cta-wrap">
-          <a href="#contact" className="port-cta">View All Work →</a>
+          <a href="/portfolio" className="port-cta">View All Work →</a>
         </div>
       </div>
     </section>

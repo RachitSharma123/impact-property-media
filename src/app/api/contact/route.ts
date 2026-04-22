@@ -1,30 +1,28 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { supabaseAdmin } from '@/lib/supabase'
+
+const TELEGRAM_BOT_TOKEN = '8705572594:AAEIRSe0_EYHKydwkre4m-nqCMymc-fmqFE'
+const TELEGRAM_CHAT_ID = '8280691508'
 
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json()
-    // body shape: { name, email, phone, suburb, services, message, source }
-    // source is either 'contact_form' or 'chatbot'
+    const { name, email, phone, service, message, source } = body
 
-    const webhookUrl = process.env.N8N_WEBHOOK_URL
-    if (!webhookUrl) {
-      console.error('N8N_WEBHOOK_URL not set')
-      return NextResponse.json({ ok: true }) // fail silently to user
-    }
+    const text = `🏠 <b>New Lead — Impact Property Media</b>\n\n👤 <b>Name:</b> ${name}\n📞 <b>Phone:</b> ${phone || 'N/A'}\n📧 <b>Email:</b> ${email}\n🔧 <b>Service:</b> ${service || 'N/A'}\n💬 <b>Message:</b> ${message || 'N/A'}\n📌 <b>Source:</b> ${source || 'website'}`
 
-    await fetch(webhookUrl, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        ...body,
-        timestamp: new Date().toISOString(),
-        site: 'Impact Property Media',
+    await Promise.all([
+      fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ chat_id: TELEGRAM_CHAT_ID, text, parse_mode: 'HTML' }),
       }),
-    })
+      supabaseAdmin.from('leads').insert({ name, email, phone, service, message, source: source || 'website' }),
+    ])
 
     return NextResponse.json({ ok: true })
   } catch (err) {
-    console.error('Webhook error:', err)
-    return NextResponse.json({ ok: true }) // always return ok to user
+    console.error('Lead capture error:', err)
+    return NextResponse.json({ ok: true })
   }
 }
