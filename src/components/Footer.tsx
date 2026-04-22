@@ -150,10 +150,10 @@ export default function Footer() {
           <h4 className="footer-col-heading">Contact</h4>
           <div className="footer-links">
             <span style={{ color: '#888', fontSize: '0.9rem' }}>Melbourne, VIC</span>
-            <a href="tel:0400000000" style={{ color: '#888', fontSize: '0.9rem', textDecoration: 'none', transition: 'color 0.2s' }}
+            <a href="tel:+61481836214" style={{ color: '#888', fontSize: '0.9rem', textDecoration: 'none', transition: 'color 0.2s' }}
               onMouseEnter={e => (e.currentTarget.style.color = '#f8f8f8')}
               onMouseLeave={e => (e.currentTarget.style.color = '#888')}>
-              0400 000 000
+              +61 481 836 214
             </a>
             <a href="mailto:hello@impactpropertymedia.com.au" style={{ color: '#888', fontSize: '0.9rem', textDecoration: 'none', wordBreak: 'break-all', transition: 'color 0.2s' }}
               onMouseEnter={e => (e.currentTarget.style.color = '#f8f8f8')}
