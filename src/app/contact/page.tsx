@@ -339,8 +339,8 @@ export default function ContactPage() {
             {[
               {
                 label: 'Phone',
-                val: '+61 481 836 214',
-                href: 'tel:+61481836214',
+                val: '1300 906 228',
+                href: 'tel:1300906228',
                 icon: (
                   <path strokeLinecap="round" strokeLinejoin="round"
                     d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
@@ -393,20 +393,11 @@ export default function ContactPage() {
               </div>
             ))}
 
-            {/* Hours */}
+            {/* Availability */}
             <div className="contact-hours">
-              <div className="contact-hours-title">Business Hours</div>
+              <div className="contact-hours-title">Availability</div>
               <div className="contact-hours-row">
-                <span className="contact-hours-day">Mon – Fri</span>
-                <span>8:00 am – 6:00 pm</span>
-              </div>
-              <div className="contact-hours-row">
-                <span className="contact-hours-day">Saturday</span>
-                <span>9:00 am – 4:00 pm</span>
-              </div>
-              <div className="contact-hours-row">
-                <span className="contact-hours-day">Sunday</span>
-                <span style={{ color: '#bbb' }}>Closed</span>
+                <span className="contact-hours-day">Available 24 / 7</span>
               </div>
             </div>
 
@@ -423,7 +414,7 @@ export default function ContactPage() {
                 </div>
                 <div className="success-title">Message Sent!</div>
                 <p className="success-sub">
-                  Thanks for reaching out. Our team will get back to you within the hour during business hours.
+                  Thanks for reaching out. Our team will get back to you shortly.
                 </p>
                 <button className="success-reset" onClick={() => setSubmitted(false)}>
                   Send another message

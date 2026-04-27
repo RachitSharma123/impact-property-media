@@ -29,9 +29,9 @@ const BOT_RESPONSES: Record<string, string> = {
     "We deliver within 24 hours for photography and 48 hours for video packages. Rush delivery available on request.",
   fast: "We deliver within 24 hours for photography and 48 hours for video packages. Rush delivery available on request.",
   book:
-    "To book a shoot, please share: 1️⃣ Your name, 2️⃣ Property address, 3️⃣ Services needed, 4️⃣ Preferred date. Or call us at +61 481 836 214!",
+    "To book a shoot, please share: 1️⃣ Your name, 2️⃣ Property address, 3️⃣ Services needed, 4️⃣ Preferred date. Or call us at 1300 906 228!",
   booking:
-    "To book a shoot, please share: 1️⃣ Your name, 2️⃣ Property address, 3️⃣ Services needed, 4️⃣ Preferred date. Or call us at +61 481 836 214!",
+    "To book a shoot, please share: 1️⃣ Your name, 2️⃣ Property address, 3️⃣ Services needed, 4️⃣ Preferred date. Or call us at 1300 906 228!",
   aerial:
     "Our drone team captures stunning aerial footage showcasing land, location and lifestyle. We're licensed and fully insured. Available across Melbourne.",
   video:
@@ -46,7 +46,7 @@ const BOT_RESPONSES: Record<string, string> = {
   hi: "Hi there! 👋 How can I help you today? I can answer questions about our services, pricing or help you book a shoot.",
   hey: "Hey! 👋 What can I help you with today?",
   contact:
-    "You can reach us at:\n📞 +61 481 836 214\n📧 hello@impactpropertymedia.com.au\n📸 @impactpropertymedia",
+    "You can reach us at:\n📞 1300 906 228\n📧 hello@impactpropertymedia.com.au\n📸 @impactpropertymedia",
 }
 
 function getBotResponse(input: string): string {
