@@ -1,5 +1,5 @@
-import Image from 'next/image'
 import { supabaseAdmin } from '@/lib/supabase'
+import PortfolioGridClient from './PortfolioGridClient'
 
 const FALLBACK = [
   { src: 'https://images.unsplash.com/photo-1600047509807-ba8f99d2cdde?w=800&q=80', alt: 'Modern luxury home exterior' },
@@ -107,21 +107,7 @@ export default async function PortfolioGrid() {
       <div className="port-inner">
         <p className="port-label">Recent Projects</p>
         <h2 className="port-heading">Our Work</h2>
-        <div className="port-grid">
-          {images.map((img, i) => (
-            <div key={i} className="port-item">
-              <Image
-                src={img.src}
-                alt={img.alt}
-                width={800}
-                height={600}
-                sizes="(max-width: 560px) 100vw, (max-width: 900px) 50vw, 33vw"
-                style={{ width: '100%', height: 'auto', display: 'block' }}
-              />
-              <div className="port-overlay"><span>View</span></div>
-            </div>
-          ))}
-        </div>
+        <PortfolioGridClient images={images} />
         <div className="port-cta-wrap">
           <a href="/portfolio" className="port-cta">View All Work →</a>
         </div>
