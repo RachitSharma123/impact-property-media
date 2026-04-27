@@ -352,15 +352,18 @@ export default function Navbar() {
           left: 0,
           right: 0,
           bottom: 0,
-          background: 'rgba(31,30,31,0.98)',
-          backdropFilter: 'blur(16px)',
-          WebkitBackdropFilter: 'blur(16px)',
+          background: '#1f1e1f',
           padding: '1.5rem',
-          display: mobileOpen ? 'flex' : 'none',
+          display: 'flex',
           flexDirection: 'column',
           gap: '0.25rem',
           overflowY: 'auto',
           zIndex: 200,
+          opacity: mobileOpen ? 1 : 0,
+          visibility: mobileOpen ? 'visible' : 'hidden',
+          transform: mobileOpen ? 'translateY(0)' : 'translateY(-8px)',
+          transition: 'opacity 0.25s ease, transform 0.25s ease, visibility 0.25s',
+          willChange: 'opacity, transform',
         }}
         aria-hidden={!mobileOpen}
       >
