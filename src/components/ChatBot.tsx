@@ -46,7 +46,7 @@ const BOT_RESPONSES: Record<string, string> = {
   hi: "Hi there! 👋 How can I help you today? I can answer questions about our services, pricing or help you book a shoot.",
   hey: "Hey! 👋 What can I help you with today?",
   contact:
-    "You can reach us at:\n📞 1300 906 228\n📧 hello@impactpropertymedia.com.au\n📸 @impactpropertymedia",
+    "You can reach us at:\n📞 1300 906 228\n📧 enquiries@impactpropertymedia.com.au\n📸 @impactpropertymedia",
 }
 
 function getBotResponse(input: string): string {

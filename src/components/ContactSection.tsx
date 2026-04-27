@@ -13,7 +13,7 @@ interface ContactInfo {
 
 const DEFAULTS: ContactInfo = {
   phone: '1300 906 228',
-  email: 'hello@impactpropertymedia.com.au',
+  email: 'enquiries@impactpropertymedia.com.au',
   address: 'Melbourne, VIC',
   instagram_url: 'https://instagram.com/impactpropertymedia',
 }
