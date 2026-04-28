@@ -1,60 +1,10 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { supabase } from '@/lib/supabasePublic'
 
 type Item = { src: string; alt: string }
-
-function CollageCell({
-  images,
-  startIdx,
-  onOpen,
-}: {
-  images: Item[]
-  startIdx: number
-  onOpen: (img: Item) => void
-}) {
-  const [idx, setIdx] = useState(startIdx % Math.max(images.length, 1))
-  const [fade, setFade] = useState(true)
-  const ref = useRef(startIdx % Math.max(images.length, 1))
-
-  useEffect(() => {
-    const t = setInterval(() => {
-      setFade(false)
-      setTimeout(() => {
-        ref.current = (ref.current + 1) % images.length
-        setIdx(ref.current)
-        setFade(true)
-      }, 380)
-    }, 2000)
-    return () => clearInterval(t)
-  }, [images.length])
-
-  const img = images[idx]
-  if (!img) return null
-
-  return (
-    <div
-      className="portfolio-item"
-      onClick={() => onOpen(img)}
-    >
-      <img
-        src={img.src}
-        alt={img.alt}
-        loading="lazy"
-        className="portfolio-item-img"
-        style={{
-          width: '100%',
-          height: 'auto',
-          display: 'block',
-          opacity: fade ? 1 : 0,
-          transition: 'opacity 0.38s ease',
-        }}
-      />
-    </div>
-  )
-}
 
 const FALLBACK: Item[] = [
   { src: 'https://images.unsplash.com/photo-1600047509807-ba8f99d2cdde?w=800&q=80', alt: 'Luxury living room' },
@@ -70,8 +20,6 @@ const FALLBACK: Item[] = [
   { src: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=80', alt: '3D virtual tour view' },
   { src: 'https://images.unsplash.com/photo-1600210492493-0946911123ea?w=800&q=80', alt: 'Contemporary home interior' },
 ]
-
-const CELL_COUNT = 12
 
 export default function PortfolioPage() {
   const [images, setImages] = useState<Item[]>(FALLBACK)
@@ -89,8 +37,6 @@ export default function PortfolioPage() {
       })
   }, [])
 
-  const step = Math.max(1, Math.floor(images.length / CELL_COUNT))
-
   return (
     <>
       <style>{`
@@ -103,7 +49,11 @@ export default function PortfolioPage() {
         @media (max-width: 900px) { .portfolio-masonry { columns: 2; } }
         @media (max-width: 560px) { .portfolio-masonry { columns: 1; } }
         .portfolio-item { break-inside: avoid; margin-bottom: 1.25rem; border-radius: 0.75rem; overflow: hidden; position: relative; cursor: pointer; display: block; }
-        .portfolio-item-img { display: block; width: 100%; height: auto; }
+        .portfolio-item-img { display: block; width: 100%; height: auto; transition: transform 0.4s ease; }
+        .portfolio-item:hover .portfolio-item-img { transform: scale(1.04); }
+        .portfolio-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.45); display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s; }
+        .portfolio-item:hover .portfolio-overlay { opacity: 1; }
+        .portfolio-overlay span { color: #f8f8f8; font-size: 0.875rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; border: 1px solid rgba(255,255,255,0.6); padding: 0.5rem 1.25rem; border-radius: 100vw; }
         .portfolio-cta { background: #bac6ff; padding: 5rem 2rem; text-align: center; }
         .portfolio-cta h2 { font-size: clamp(1.5rem, 3.5vw, 2.5rem); font-weight: 700; color: #1f1e1f; letter-spacing: -0.03em; margin-bottom: 0.75rem; line-height: 1.2; }
         .portfolio-cta p { font-size: 1rem; color: rgba(31,30,31,0.7); margin-bottom: 2rem; max-width: 440px; margin-left: auto; margin-right: auto; }
@@ -122,13 +72,13 @@ export default function PortfolioPage() {
 
       <section className="portfolio-grid-section">
         <div className="portfolio-masonry">
-          {Array.from({ length: CELL_COUNT }).map((_, i) => (
-            <CollageCell
-              key={i}
-              images={images}
-              startIdx={i * step}
-              onOpen={setActive}
-            />
+          {images.map((img, i) => (
+            <div key={i} className="portfolio-item" onClick={() => setActive(img)}>
+              <img src={img.src} alt={img.alt} loading="lazy" className="portfolio-item-img" />
+              <div className="portfolio-overlay">
+                <span>View</span>
+              </div>
+            </div>
           ))}
         </div>
       </section>

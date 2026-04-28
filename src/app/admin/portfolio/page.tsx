@@ -43,6 +43,15 @@ export default function PortfolioAdmin() {
     load()
   }
 
+  async function toggleFeatured(id: string, current: boolean) {
+    await fetch(`/api/admin/data?table=portfolio_items&id=${id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ featured: !current }),
+    })
+    setItems(prev => prev.map(i => i.id === id ? { ...i, featured: !current } : i))
+  }
+
   const inp = { padding: '0.6rem 0.75rem', borderRadius: '0.4rem', border: '1px solid rgba(255,255,255,0.1)', background: '#222', color: '#f8f8f8', fontSize: '0.88rem' }
 
   return (
@@ -78,8 +87,20 @@ export default function PortfolioAdmin() {
             <img src={item.image_url} alt={item.title} style={{ width: '100%', height: '140px', objectFit: 'cover' }} />
             <div style={{ padding: '0.75rem' }}>
               <p style={{ color: '#f8f8f8', fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.25rem' }}>{item.title || 'Untitled'}</p>
-              <p style={{ color: '#666', fontSize: '0.78rem', marginBottom: '0.5rem' }}>{item.category}{item.featured ? ' · ⭐' : ''}</p>
-              <button onClick={() => handleDelete(item.id)} style={{ color: '#f87171', background: 'none', border: 'none', cursor: 'pointer', fontSize: '0.8rem', padding: 0 }}>Delete</button>
+              <p style={{ color: '#666', fontSize: '0.78rem', marginBottom: '0.5rem' }}>{item.category}</p>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <label style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', cursor: 'pointer' }}>
+                  <input
+                    type="checkbox"
+                    checked={!!item.featured}
+                    onChange={() => toggleFeatured(item.id, !!item.featured)}
+                  />
+                  <span style={{ color: item.featured ? '#bac6ff' : '#666', fontSize: '0.8rem', fontWeight: item.featured ? 700 : 400 }}>
+                    {item.featured ? '⭐ Featured' : 'Feature'}
+                  </span>
+                </label>
+                <button onClick={() => handleDelete(item.id)} style={{ color: '#f87171', background: 'none', border: 'none', cursor: 'pointer', fontSize: '0.8rem', padding: 0 }}>Delete</button>
+              </div>
             </div>
           </div>
         ))}
