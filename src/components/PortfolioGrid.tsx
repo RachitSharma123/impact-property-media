@@ -14,7 +14,7 @@ const FALLBACK = [
 ]
 
 export default async function PortfolioGrid() {
-  const { data } = await supabaseAdmin.from('portfolio_items').select('*').order('display_order').limit(9)
+  const { data } = await supabaseAdmin.from('portfolio_items').select('*').order('display_order').limit(100)
   const images = data?.length
     ? data.map((i: any) => ({ src: i.image_url, alt: i.title || 'Portfolio image' }))
     : FALLBACK
