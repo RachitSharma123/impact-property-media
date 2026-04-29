@@ -11,7 +11,7 @@ export async function POST(req: NextRequest) {
 
     const text = `🏠 <b>New Lead — Impact Property Media</b>\n\n👤 <b>Name:</b> ${name}\n📞 <b>Phone:</b> ${phone || 'N/A'}\n📧 <b>Email:</b> ${email}\n🔧 <b>Service:</b> ${service || 'N/A'}\n💬 <b>Message:</b> ${message || 'N/A'}\n📌 <b>Source:</b> ${source || 'website'}`
 
-    await Promise.all([
+    const [tgRes] = await Promise.all([
       fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -19,6 +19,8 @@ export async function POST(req: NextRequest) {
       }),
       supabaseAdmin.from('leads').insert({ name, email, phone, service, message, source: source || 'website' }),
     ])
+    const tgJson = await tgRes.json()
+    console.log('Telegram response:', JSON.stringify(tgJson))
 
     return NextResponse.json({ ok: true })
   } catch (err) {
