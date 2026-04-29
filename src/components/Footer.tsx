@@ -172,7 +172,19 @@ export default function Footer() {
       <div className="footer-bottom">
         <div className="footer-bottom-inner">
           <p>© 2026 Impact Property Media. All rights reserved.</p>
-          <p>Built with precision.</p>
+          <p>
+            Powered by{' '}
+            <a
+              href="https://aussieai.shop"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ color: '#bac6ff', textDecoration: 'none', transition: 'opacity 0.2s' }}
+              onMouseEnter={e => (e.currentTarget.style.opacity = '0.7')}
+              onMouseLeave={e => (e.currentTarget.style.opacity = '1')}
+            >
+              AussieAI.shop
+            </a>
+          </p>
         </div>
       </div>
     </footer>
