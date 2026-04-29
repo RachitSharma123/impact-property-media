@@ -115,8 +115,8 @@ export default function ChatBot() {
     leadDataRef.current = updated
     setLeadData(updated)
 
-    // Fire webhook when phone AND (name or email) are known
-    if (updated.phone && (updated.name || updated.email)) {
+    // Fire webhook when phone is detected
+    if (updated.phone) {
       fireWebhook({ ...updated, message: `Lead captured via chatbot. Last message: ${text}` })
     }
   }
@@ -130,6 +130,12 @@ export default function ChatBot() {
 
     // Run lead detection on user messages
     detectAndSaveLead(text)
+
+    // Fire engagement notification after 3rd user message (no contact info yet)
+    const userMsgCount = messages.filter((m) => m.role === 'user').length + 1
+    if (userMsgCount === 3 && !leadDataRef.current.phone) {
+      fireWebhook({ message: `Chatbot engagement: 3 messages sent. Last: "${text}"` })
+    }
 
     // Check if message is primarily a phone number
     const isPhoneOnly =
