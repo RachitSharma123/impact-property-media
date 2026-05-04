@@ -154,10 +154,10 @@ export default function Footer() {
               onMouseLeave={e => (e.currentTarget.style.color = '#888')}>
               1300 906 228
             </a>
-            <a href="mailto:enquiries@impactpropertymedia.com.au" style={{ color: '#888', fontSize: '0.9rem', textDecoration: 'none', wordBreak: 'break-all', transition: 'color 0.2s' }}
+            <a href="mailto:info@impactpropertymedia.com.au" style={{ color: '#888', fontSize: '0.9rem', textDecoration: 'none', wordBreak: 'break-all', transition: 'color 0.2s' }}
               onMouseEnter={e => (e.currentTarget.style.color = '#f8f8f8')}
               onMouseLeave={e => (e.currentTarget.style.color = '#888')}>
-              enquiries@impactpropertymedia.com.au
+              info@impactpropertymedia.com.au
             </a>
             <a href="https://instagram.com/impactpropertymedia" target="_blank" rel="noopener noreferrer"
               style={{ color: '#888', fontSize: '0.9rem', textDecoration: 'none', transition: 'color 0.2s' }}
