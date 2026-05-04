@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Image from "next/image";
+import YouTubePlayer from "./YouTubePlayer";
 
 export const metadata: Metadata = {
   title: "Virtual Tours | Impact Property Media",
@@ -330,6 +331,8 @@ export default function VirtualToursPage() {
             ))}
           </div>
         </section>
+
+        <YouTubePlayer />
 
         {/* CTA */}
         <section className="svc-cta">
