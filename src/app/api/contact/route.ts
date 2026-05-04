@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
 
 const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN || '8697366874:AAHKtyoO_KlRlXKbwZvZppsI_8HPsoiJ_EU'
-const TELEGRAM_CHAT_ID = '8280691508'
+const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID || '8638005667'
 
 export async function POST(req: NextRequest) {
   try {
