@@ -121,42 +121,50 @@ export default function ChatBot() {
     }
   }
 
-  function sendMessage(text: string) {
+  async function sendMessage(text: string) {
     if (!text.trim()) return
     const userMsg: Message = { role: 'user', text }
-    setMessages((prev) => [...prev, userMsg])
+    const nextMessages = [...messages, userMsg]
+    setMessages(nextMessages)
     setInput('')
     setTyping(true)
 
-    // Run lead detection on user messages
     detectAndSaveLead(text)
 
-    // Fire engagement notification after 3rd user message (no contact info yet)
     const userMsgCount = messages.filter((m) => m.role === 'user').length + 1
     if (userMsgCount === 3 && !leadDataRef.current.phone) {
       fireWebhook({ message: `Chatbot engagement: 3 messages sent. Last: "${text}"` })
     }
 
-    // Check if message is primarily a phone number
-    const isPhoneOnly =
-      /^[\s\d\+\-\(\)]{7,15}$/.test(text.trim()) &&
-      (/(\+?61|0)4\d{8}/.test(text) || /(\+?61|0)[2-9]\d{8}/.test(text))
+    const isPhone = /(\+?61|0)4\d{8}/.test(text) || /(\+?61|0)[2-9]\d{8}/.test(text)
+    const isPhoneOnly = /^[\s\d\+\-\(\)]{7,15}$/.test(text.trim()) && isPhone
 
-    setTimeout(() => {
-      let botReply: string
-      if (isPhoneOnly) {
-        botReply = "Got it! \uD83D\uDCDE We'll be in touch shortly. Can I also grab your name?"
-      } else if (
-        /(\+?61|0)4\d{8}/.test(text) ||
-        /(\+?61|0)[2-9]\d{8}/.test(text)
-      ) {
-        botReply = "Thanks! We'll give you a call shortly to discuss your property needs. \uD83D\uDCDE"
-      } else {
-        botReply = getBotResponse(text)
-      }
-      setMessages((prev) => [...prev, { role: 'bot', text: botReply }])
+    if (isPhoneOnly) {
+      setMessages((prev) => [...prev, { role: 'bot', text: "Got it! 📞 We'll be in touch shortly. Can I also grab your name?" }])
       setTyping(false)
-    }, 800)
+      return
+    }
+    if (isPhone) {
+      setMessages((prev) => [...prev, { role: 'bot', text: "Thanks! We'll give you a call shortly. 📞" }])
+      setTyping(false)
+      return
+    }
+
+    try {
+      const res = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          messages: nextMessages.map(m => ({ role: m.role === 'bot' ? 'assistant' : 'user', content: m.text })),
+        }),
+      })
+      const data = await res.json()
+      setMessages((prev) => [...prev, { role: 'bot', text: data.reply || getBotResponse(text) }])
+    } catch {
+      setMessages((prev) => [...prev, { role: 'bot', text: getBotResponse(text) }])
+    } finally {
+      setTyping(false)
+    }
   }
 
   return (
