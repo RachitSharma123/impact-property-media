@@ -1,5 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
+import sharp from 'sharp'
+
+const MAX_WIDTH = 1920
+const MAX_HEIGHT = 1920
+const WEBP_QUALITY = 85
 
 export async function POST(req: NextRequest) {
   const fd = await req.formData()
@@ -10,11 +15,19 @@ export async function POST(req: NextRequest) {
   const display_order = Number(fd.get('display_order') || 0)
 
   const bytes = await file.arrayBuffer()
-  const path = `${Date.now()}-${file.name}`
+
+  const processed = await sharp(Buffer.from(bytes))
+    .rotate()
+    .resize(MAX_WIDTH, MAX_HEIGHT, { fit: 'inside', withoutEnlargement: true })
+    .webp({ quality: WEBP_QUALITY })
+    .toBuffer()
+
+  const baseName = file.name.replace(/\.[^/.]+$/, '')
+  const path = `${Date.now()}-${baseName}.webp`
 
   const { data: uploadData, error } = await supabaseAdmin.storage
     .from('portfolio-images')
-    .upload(path, bytes, { contentType: file.type })
+    .upload(path, processed, { contentType: 'image/webp' })
 
   if (error) return NextResponse.json({ error: error.message }, { status: 400 })
 
