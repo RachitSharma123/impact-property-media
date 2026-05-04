@@ -22,7 +22,13 @@ If someone wants to book or leaves their number, confirm you'll pass it on and s
 Never invent pricing or services not listed above.`
 
 export async function POST(req: NextRequest) {
-  const { messages } = await req.json()
+  const { messages, userType } = await req.json()
+
+  const userContext = userType === 'agent'
+    ? '\nThe user is a REAL ESTATE AGENT — focus on bulk bookings, turnaround speed, consistent quality, and how we help agents sell listings faster.'
+    : userType === 'owner'
+    ? '\nThe user is a PROPERTY OWNER — focus on making their home look great, value for money, and the booking process.'
+    : ''
 
   const apiKey = process.env.OPENROUTER_API_KEY
   if (!apiKey) return NextResponse.json({ error: 'AI not configured' }, { status: 500 })
@@ -38,7 +44,7 @@ export async function POST(req: NextRequest) {
     body: JSON.stringify({
       model: 'meta-llama/llama-3.1-8b-instruct',
       messages: [
-        { role: 'system', content: SYSTEM_PROMPT },
+        { role: 'system', content: SYSTEM_PROMPT + userContext },
         ...messages,
       ],
       max_tokens: 150,

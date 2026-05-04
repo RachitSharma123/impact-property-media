@@ -7,16 +7,18 @@ interface Message {
   text: string
 }
 
-const QUICK_REPLIES = [
+const QUICK_REPLIES_DEFAULT = [
   'What services do you offer?',
   'How much does it cost?',
   'How fast is turnaround?',
   'Leave your number',
 ]
 
+const QUICK_REPLIES_TYPE = ['I\'m a Real Estate Agent', 'I\'m a Property Owner']
+
 const BOT_RESPONSES: Record<string, string> = {
   default:
-    "Hi! I'm the Impact Property Media assistant. I can help you with our services, pricing, and bookings. What would you like to know?",
+    "Hi! 👋 Welcome to Impact Property Media.\n\nAre you a real estate agent or a property owner? This helps me give you the right info.",
   services:
     "We offer: 📸 Real Estate Photography, 🎥 Cinematic Videography, 🚁 Aerial & Drone, 🏠 Virtual Tours, and 📐 Floor Plans — all in one shoot day!",
   cost:
@@ -69,6 +71,8 @@ export default function ChatBot() {
   const bottomRef = useRef<HTMLDivElement>(null)
   const [leadData, setLeadData] = useState<{ name?: string; phone?: string; email?: string }>({})
   const leadDataRef = useRef<{ name?: string; phone?: string; email?: string }>({})
+  const [userType, setUserType] = useState<'agent' | 'owner' | null>(null)
+  const userTypeRef = useRef<'agent' | 'owner' | null>(null)
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
@@ -129,11 +133,29 @@ export default function ChatBot() {
     setInput('')
     setTyping(true)
 
+    // Detect agent/owner selection
+    const lowerText = text.toLowerCase()
+    if (!userTypeRef.current) {
+      if (lowerText.includes('agent')) {
+        userTypeRef.current = 'agent'
+        setUserType('agent')
+        setMessages((prev) => [...prev, { role: 'bot', text: "Great, welcome! 🏡 As an agent, we can help you deliver stunning property media that sells listings faster. What would you like to know?" }])
+        setTyping(false)
+        return
+      } else if (lowerText.includes('owner')) {
+        userTypeRef.current = 'owner'
+        setUserType('owner')
+        setMessages((prev) => [...prev, { role: 'bot', text: "Welcome! 🏠 As a property owner, we'll make your home look its absolute best for sale or rental. What would you like to know?" }])
+        setTyping(false)
+        return
+      }
+    }
+
     detectAndSaveLead(text)
 
     const userMsgCount = messages.filter((m) => m.role === 'user').length + 1
     if (userMsgCount === 3 && !leadDataRef.current.phone) {
-      fireWebhook({ message: `Chatbot engagement: 3 messages sent. Last: "${text}"` })
+      fireWebhook({ message: `Chatbot engagement: 3 messages sent. User type: ${userTypeRef.current || 'unknown'}. Last: "${text}"` })
     }
 
     const isPhone = /(\+?61|0)4\d{8}/.test(text) || /(\+?61|0)[2-9]\d{8}/.test(text)
@@ -156,6 +178,7 @@ export default function ChatBot() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           messages: nextMessages.map(m => ({ role: m.role === 'bot' ? 'assistant' : 'user', content: m.text })),
+          userType: userTypeRef.current,
         }),
       })
       const data = await res.json()
@@ -340,7 +363,7 @@ export default function ChatBot() {
               borderTop: '1px solid #ffffff0d',
             }}
           >
-            {QUICK_REPLIES.map((qr) => (
+            {(userType === null ? QUICK_REPLIES_TYPE : QUICK_REPLIES_DEFAULT).map((qr) => (
               <button
                 key={qr}
                 onClick={() => sendMessage(qr)}
