@@ -26,11 +26,20 @@ export default function VideoHeroClient({
   const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
-    if (videoRef.current) {
-      videoRef.current.play().catch(() => {
-        // Autoplay blocked — muted so it should succeed in all modern browsers
-      });
+    const video = videoRef.current;
+    if (!video) return;
+
+    const attemptPlay = () => {
+      video.play().catch(() => {});
+    };
+
+    if (video.readyState >= 3) {
+      attemptPlay();
+    } else {
+      video.addEventListener('canplay', attemptPlay, { once: true });
     }
+
+    return () => video.removeEventListener('canplay', attemptPlay);
   }, []);
 
   // Split heading on newline for two-line display
@@ -59,6 +68,7 @@ export default function VideoHeroClient({
           width: 100%;
           height: 100%;
           object-fit: cover;
+          -webkit-object-fit: cover;
           object-position: center;
           z-index: 0;
         }
@@ -233,6 +243,8 @@ export default function VideoHeroClient({
           loop
           playsInline
           preload="auto"
+          // @ts-ignore — webkit-playsinline needed for older iOS Safari
+          webkit-playsinline="true"
         />
 
         {/* Dark overlay */}
