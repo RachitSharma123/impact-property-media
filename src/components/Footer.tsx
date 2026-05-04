@@ -1,4 +1,5 @@
 'use client'
+import { useEffect, useState } from 'react'
 
 const serviceLinks = [
   { label: 'Photography', href: '/services/photography' },
@@ -46,6 +47,14 @@ function FooterLink({ href, children }: { href: string; children: React.ReactNod
 }
 
 export default function Footer() {
+  const [info, setInfo] = useState({ phone: '1300 906 228', email: 'info@impactpropertymedia.com.au' })
+  useEffect(() => {
+    fetch('/api/admin/data?table=settings').then(r => r.json()).then(data => {
+      if (Array.isArray(data) && data[0]) {
+        setInfo({ phone: data[0].phone || '1300 906 228', email: data[0].email || 'info@impactpropertymedia.com.au' })
+      }
+    }).catch(() => {})
+  }, [])
   return (
     <footer style={{ background: '#1f1e1f', fontFamily: 'Poppins, sans-serif' }}>
       <style>{`
@@ -149,15 +158,15 @@ export default function Footer() {
         <div>
           <h4 className="footer-col-heading">Contact</h4>
           <div className="footer-links">
-            <a href="tel:1300906228" style={{ color: '#888', fontSize: '0.9rem', textDecoration: 'none', transition: 'color 0.2s' }}
-              onMouseEnter={e => (e.currentTarget.style.color = '#f8f8f8')}
-              onMouseLeave={e => (e.currentTarget.style.color = '#888')}>
-              1300 906 228
+            <a href={`tel:${info.phone.replace(/\s/g, "")}`} style={{ color: "#888", fontSize: "0.9rem", textDecoration: "none", transition: "color 0.2s" }}
+              onMouseEnter={e => (e.currentTarget.style.color = "#f8f8f8")}
+              onMouseLeave={e => (e.currentTarget.style.color = "#888")}>
+              {info.phone}
             </a>
-            <a href="mailto:info@impactpropertymedia.com.au" style={{ color: '#888', fontSize: '0.9rem', textDecoration: 'none', wordBreak: 'break-all', transition: 'color 0.2s' }}
-              onMouseEnter={e => (e.currentTarget.style.color = '#f8f8f8')}
-              onMouseLeave={e => (e.currentTarget.style.color = '#888')}>
-              info@impactpropertymedia.com.au
+            <a href={`mailto:${info.email}`} style={{ color: "#888", fontSize: "0.9rem", textDecoration: "none", wordBreak: "break-all", transition: "color 0.2s" }}
+              onMouseEnter={e => (e.currentTarget.style.color = "#f8f8f8")}
+              onMouseLeave={e => (e.currentTarget.style.color = "#888")}>
+              {info.email}
             </a>
             <a href="https://instagram.com/impactpropertymedia" target="_blank" rel="noopener noreferrer"
               style={{ color: '#888', fontSize: '0.9rem', textDecoration: 'none', transition: 'color 0.2s' }}
