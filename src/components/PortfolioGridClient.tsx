@@ -18,8 +18,8 @@ export default function PortfolioGridClient({ images }: { images: Item[] }) {
         .port-grid { columns: 3; column-gap: 1rem; }
         @media (max-width: 900px) { .port-grid { columns: 2; } }
         @media (max-width: 560px) { .port-grid { columns: 1; } }
-        .port-item { break-inside: avoid; margin-bottom: 1rem; border-radius: 0.5rem; overflow: hidden; position: relative; cursor: pointer; }
-        .port-item img { width: 100%; height: auto; display: block; transition: transform 0.4s ease; }
+        .port-item { break-inside: avoid; margin-bottom: 1rem; border-radius: 0.5rem; overflow: hidden; position: relative; cursor: pointer; aspect-ratio: 4/3; }
+        .port-item img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.4s ease; }
         .port-item:hover img { transform: scale(1.04); }
         .port-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.45); display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s; }
         .port-item:hover .port-overlay { opacity: 1; }
