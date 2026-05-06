@@ -83,8 +83,8 @@ export default function PortfolioPage() {
         .rest-grid { columns: 3; column-gap: 1rem; }
         @media (max-width: 900px) { .rest-grid { columns: 2; } }
         @media (max-width: 560px) { .rest-grid { columns: 1; } }
-        .rest-item { break-inside: avoid; margin-bottom: 1rem; border-radius: 0.75rem; overflow: hidden; position: relative; cursor: pointer; }
-        .rest-item img { width: 100%; height: auto; display: block; transition: transform 0.4s ease; }
+        .rest-item { break-inside: avoid; margin-bottom: 1rem; border-radius: 0.75rem; overflow: hidden; position: relative; cursor: pointer; aspect-ratio: 4/3; }
+        .rest-item img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.4s ease; }
         .rest-item:hover img { transform: scale(1.04); }
 
         /* Skeleton */
